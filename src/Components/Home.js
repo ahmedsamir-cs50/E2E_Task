@@ -33,7 +33,14 @@ function Home() {
   // Handle input change for search bar
   const handleSearchInputChange = (e) => {
     setSearchQuery(e.target.value);
+    console.log((e.target.value).toLowerCase().trim())
   };
+  function deleteSpacesBetweenWords(inputString) {
+    // Use a regular expression to match spaces between words
+    // The regular expression \s+ matches one or more whitespace characters
+    // The g flag makes the replacement global (i.e., replace all occurrences)
+    return inputString.replace(/\s+/g, '');
+  }
 
   // Handle sorting option change
   const handleSort = (e) => {
@@ -47,9 +54,15 @@ function Home() {
 
   // Function to filter, sort, and range items
   const filterAndSortAndRangeItems = (searchTerm, sortOption, priceRange) => {
-    let filteredResults = items.filter((item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    let filteredResults = items.filter((item) => {
+      // Convert item name and search term to lowercase
+      const itemNameLower = deleteSpacesBetweenWords((item.name.toLowerCase()));
+      console.log(itemNameLower)
+      const searchTermLower = deleteSpacesBetweenWords(searchTerm.toLowerCase());
+  
+      // Check if any part of the item name contains the search term
+      return itemNameLower.includes(searchTermLower);
+    });
 
     if (priceRange > 0) {
       rangedItems = filteredResults.filter((i) => i.price <= priceRange);
@@ -113,7 +126,7 @@ function Home() {
       </div>
 
       {/* Display items */}
-      <Row className=" mt-4">
+      <Row className=" mt-4 d-flex ">
         
           {sortedItems.map((prod) => (
             <Item key={prod.id} item={prod} />
